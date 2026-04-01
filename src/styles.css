@@ -423,4 +423,6 @@ textarea.field-input { resize: vertical; min-height: 56px; line-height: 1.5; }
   .project-inner { grid-template-columns: 1fr; }
   .settings-grid { grid-template-columns: 1fr; }
   .form-2col { grid-template-columns: 1fr; }
+  /* Verhindert dass Buttons hinter iOS Safari Toolbar verschwinden */
+  .view { padding-bottom: 100px; }
 }
