@@ -15,10 +15,12 @@
  * 1mm = 2.8346pt
  */
 
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
 import QRCode from 'qrcode';
 
 // ── KONSTANTEN ────────────────────────────────────────────────────────────────
+
+const WATERMARK_TEXT = 'ArjensProjectTool v1.0.0';
 
 const TYPE_LABELS = {
   angebot: 'Angebot',
@@ -30,6 +32,11 @@ const TYPE_LABELS = {
 const MM = 2.8346;      // 1mm in PDF-Punkten
 const A4_H = 841.89;    // 297mm
 const A4_W = 595.28;    // 210mm
+
+// Seitenränder (25mm links/rechts, wie original @page padding)
+const LEFT   = 25 * MM;
+const RIGHT  = A4_W - 25 * MM;
+const CWIDTH = RIGHT - LEFT;   // 160mm nutzbar
 
 /** mm → PDF-Punkte (horizontal) */
 function mm(v) { return v * MM; }
@@ -247,6 +254,74 @@ function dataUrlToBytes(dataUrl) {
  *   .logo-container top: 5mm → Logo bei 20+5=25mm vom Blattrand
  *   .header-grid margin-top: 15mm → Header-Start bei 20+5+15=40mm (approximiert)
  */
+// ─────────────────────────────────────────────────────────────────────────────
+// Zeichnet Kopfzeile auf einer FOLGESEITE (kompakter als Seite 1)
+// ─────────────────────────────────────────────────────────────────────────────
+async function drawContinuationHeader(pdfDoc, { doc, project, settings, logoDataUrl, pageNum, totalPages }) {
+  const page   = pdfDoc.addPage([A4_W, A4_H]);
+  const fReg   = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fBold  = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  const type    = doc.type;
+  const label   = TYPE_LABELS[type] || type;
+  const docNum  = `${doc.base_number}-${String(doc.version).padStart(2, '0')}`;
+  const BLACK   = rgb(0, 0, 0);
+  const GRAY666_HDR = rgb(0.4, 0.4, 0.4);
+  const EAEAEA  = rgb(0.918, 0.918, 0.918);
+  const GRAY333 = rgb(0.2, 0.2, 0.2);
+  const GRAY444 = rgb(0.267, 0.267, 0.267);
+
+  const HDR_SIZE = 7.5;
+  const HDR_Y    = A4_H - mm(12);
+
+  // Kopfzeile: Firmenname links, Typ+Nummer rechts
+  const hdrLeft  = settings.firma_name || '';
+  page.drawText(hdrLeft, { x: LEFT, y: HDR_Y, size: HDR_SIZE, font: fReg, color: GRAY666_HDR });
+  const hdrRight  = `${label} ${docNum}`;
+  const hdrRightW = fReg.widthOfTextAtSize(hdrRight, HDR_SIZE);
+  page.drawText(hdrRight, { x: RIGHT - hdrRightW, y: HDR_Y, size: HDR_SIZE, font: fReg, color: GRAY666_HDR });
+
+  // Wasserzeichen
+  const WM_SIZE  = 6;
+  const WM_COLOR = rgb(0.75, 0.75, 0.75);
+  const wmW      = fReg.widthOfTextAtSize(WATERMARK_TEXT, WM_SIZE);
+  page.drawText(WATERMARK_TEXT, {
+    x: A4_W - mm(4), y: (A4_H / 2) - (wmW / 2),
+    size: WM_SIZE, font: fReg, color: WM_COLOR, rotate: degrees(90)
+  });
+
+  // Footer
+  const FOOTER_Y    = mm(8.5);
+  const FOOTER_SIZE = 7.5;
+  const footerLeft = [
+    settings.firma_name,
+    settings.firma_adresse,
+    [settings.firma_plz, settings.firma_ort].filter(Boolean).join(' '),
+    settings.firma_land || 'Schweiz'
+  ].filter(Boolean).join(', ');
+  const footerMid = [
+    settings.firma_uid,
+    settings.firma_iban ? `IBAN ${settings.firma_iban}` : '',
+    settings.firma_bank
+  ].filter(Boolean).join(' · ');
+  const pageStr = `Seite ${pageNum} von ${totalPages || 1}`;
+  const midW    = footerMid ? fReg.widthOfTextAtSize(footerMid, FOOTER_SIZE) : 0;
+  const rightW  = fReg.widthOfTextAtSize(pageStr, FOOTER_SIZE);
+  const MIN_GAP = mm(4);
+  let fLeftText = footerLeft;
+  const maxLeftW = CWIDTH - midW - rightW - MIN_GAP * 2;
+  while (fLeftText.length > 5 && fReg.widthOfTextAtSize(fLeftText, FOOTER_SIZE) > maxLeftW) {
+    fLeftText = fLeftText.slice(0, -4) + '…';
+  }
+  const leftW = fReg.widthOfTextAtSize(fLeftText, FOOTER_SIZE);
+  const gap   = Math.max(MIN_GAP, (CWIDTH - leftW - midW - rightW) / 2);
+  if (fLeftText) page.drawText(fLeftText, { x: LEFT, y: FOOTER_Y, size: FOOTER_SIZE, font: fReg, color: GRAY444 });
+  if (footerMid) page.drawText(footerMid, { x: LEFT + leftW + gap, y: FOOTER_Y, size: FOOTER_SIZE, font: fReg, color: GRAY444 });
+  page.drawText(pageStr, { x: RIGHT - rightW, y: FOOTER_Y, size: FOOTER_SIZE, font: fReg, color: GRAY444 });
+
+  return page;
+}
+
 async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logoDataUrl, totalPages }) {
   const page = pdfDoc.addPage([A4_W, A4_H]);
   const fReg   = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -270,9 +345,6 @@ async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logo
   const docNum = `${doc.base_number}-${String(doc.version).padStart(2, '0')}`;
 
   // Seitenränder (links/rechts: 25mm)
-  const LEFT  = mm(25);
-  const RIGHT = A4_W - mm(25);
-  const CWIDTH = RIGHT - LEFT;   // Nutzbare Breite: 160mm
 
   // ── KOPFZEILE (headerTemplate aus Puppeteer) ────────────────────────────────
   // Original: <span>Firma</span> ... <span>Label DocNum</span>
@@ -513,64 +585,88 @@ async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logo
 
   curY -= TH_H;
 
-  // Positionszeilen
-  // Original CSS: table.positions tbody tr { background: #fff; } — KEINE Trennlinien zwischen Zeilen!
-  // Nur padding: 6px 4px (= ~2.1mm/1.4mm) für Zellen
+  // ── Y-Grenze: unter dieser Linie alles nur im Footer ─────────────────────
+  // Footer belegt mm(8.5), plus Puffer mm(10) → safe bottom mm(20) vom Rand
+  const SAFE_BOTTOM = mm(22);
+  let currentPage = page; // Referenz auf aktive Seite
+  let pageCount   = 1;   // Seite 1 ist schon erstellt
+
+  // Helper: neue Seite beginnen (mit Kopf + Tabellenheader-Wiederholung)
+  const newPage = async () => {
+    pageCount++;
+    currentPage = await drawContinuationHeader(pdfDoc, {
+      doc, project, settings, logoDataUrl,
+      pageNum: pageCount, totalPages
+    });
+    // Tabellenheader wiederholen
+    const startY = A4_H - mm(22); // nach Kopfzeile
+    currentPage.drawRectangle({ x: LEFT, y: startY - TH_H, width: CWIDTH, height: TH_H, color: EAEAEA });
+    currentPage.drawLine({ start: { x: LEFT, y: startY - TH_H }, end: { x: RIGHT, y: startY - TH_H }, thickness: 0.75, color: BLACK });
+    let hx2 = LEFT;
+    for (let i = 0; i < headers.length; i++) {
+      const tw2 = fReg.widthOfTextAtSize(headers[i], TH_SIZE);
+      const dx2 = rightAlign[i]
+        ? hx2 + COL_WIDTHS[i] - tw2 - mm(1.4)
+        : hx2 + mm(1.4);
+      currentPage.drawText(headers[i], { x: dx2, y: startY - TH_H + mm(2), size: TH_SIZE, font: fReg, color: GRAY333 });
+      hx2 += COL_WIDTHS[i];
+    }
+    curY = startY - TH_H;
+  };
+
+  // Original CSS: table.positions tbody tr — KEINE Trennlinien zwischen Zeilen!
   for (const pos of positions) {
     const gesamtpreis = parseFloat(pos.gesamtpreis) || 0;
     const hasDesc = !!(pos.beschreibung && pos.beschreibung.trim());
-    // Beschreibung: 8pt, color:#666, font-style:italic → fItal
     const descLines = hasDesc ? wrapText(pos.beschreibung, fItal, 8, COL_WIDTHS[1] - mm(2)) : [];
     const rowHeight = TD_H + (descLines.length > 0 ? mm(4.5) + mm(3.5 * (descLines.length - 1)) : 0);
 
-    // KEINE Trennlinie zwischen Zeilen (nicht im Original-CSS)
-    const tdY = curY - mm(5); // padding: 6px ≈ 2.1mm von oben + text baseline
+    // Seitenumbruch wenn Zeile nicht mehr passt
+    if (curY - rowHeight < SAFE_BOTTOM) {
+      await newPage();
+    }
 
+    const tdY = curY - mm(5);
     let tx = LEFT;
-    // Pos-Nr — padding: 6px 4px ≈ 2.1mm/1.4mm
-    page.drawText(s(pos.pos_nr), { x: tx + mm(1.4), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
+
+    currentPage.drawText(s(pos.pos_nr), { x: tx + mm(1.4), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
     tx += COL_WIDTHS[0];
 
-    // Bezeichnung (9pt, normal) + Beschreibung (8pt, italic, #666)
-    page.drawText(s(pos.bezeichnung), { x: tx + mm(1.4), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
+    currentPage.drawText(s(pos.bezeichnung), { x: tx + mm(1.4), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
     if (descLines.length > 0) {
       let dy = tdY - mm(4.5);
       for (const dl of descLines) {
-        page.drawText(dl, { x: tx + mm(1.4), y: dy, size: 8, font: fItal, color: GRAY666 });
+        currentPage.drawText(dl, { x: tx + mm(1.4), y: dy, size: 8, font: fItal, color: GRAY666 });
         dy -= mm(3.5);
       }
     }
     tx += COL_WIDTHS[1];
 
-    // Menge (rechtsbündig)
     if (pos.menge != null) {
       const mStr = s(pos.menge);
-      page.drawText(mStr, {
+      currentPage.drawText(mStr, {
         x: tx + COL_WIDTHS[2] - fReg.widthOfTextAtSize(mStr, TD_SIZE) - mm(1),
         y: tdY, size: TD_SIZE, font: fReg, color: BLACK
       });
     }
     tx += COL_WIDTHS[2];
 
-    // Einheit (linksbündig)
-    page.drawText(s(pos.einheit || 'h'), { x: tx + mm(1), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
+    currentPage.drawText(s(pos.einheit || 'h'), { x: tx + mm(1), y: tdY, size: TD_SIZE, font: fReg, color: BLACK });
     tx += COL_WIDTHS[3];
 
     if (!isLS) {
-      // Einzelpreis (rechtsbündig, mit "CHF X'XXX.XX")
       if (pos.einzelpreis != null) {
         const ep = fmtCHF(pos.einzelpreis);
-        page.drawText(ep, {
+        currentPage.drawText(ep, {
           x: tx + COL_WIDTHS[4] - fReg.widthOfTextAtSize(ep, TD_SIZE) - mm(1),
           y: tdY, size: TD_SIZE, font: fReg, color: BLACK
         });
       }
       tx += COL_WIDTHS[4];
 
-      // Gesamtpreis (rechtsbündig, mit "CHF X'XXX.XX")
       const gp = fmtCHF(gesamtpreis);
       const gpColor = gesamtpreis < 0 ? rgb(0.8, 0, 0) : BLACK;
-      page.drawText(gp, {
+      currentPage.drawText(gp, {
         x: tx + COL_WIDTHS[5] - fReg.widthOfTextAtSize(gp, TD_SIZE) - mm(1),
         y: tdY, size: TD_SIZE, font: fReg, color: gpColor
       });
@@ -580,70 +676,44 @@ async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logo
   }
 
   // ── TOTALS-TABELLE (nur wenn nicht Lieferschein) ──────────────────────────
-  // table.totals: width=100%, background=#eaeaea, font-size=9.5pt
-  // .border-top td: border-top=1px solid #000, font-weight=bold
-  // Exakte Label aus generator.js:
-  //   "Summe Positionen ohne Mehrwertsteuer"
-  //   "zzgl. X% Mehrwertsteuer"  ODER  "ohne Mehrwertsteuer"
-  //   "Rechnungsbetrag"
-
-  curY -= mm(3);
-  let signOffStartY = curY;
-
   if (!isLS) {
     const TOT_SIZE = 9.5;
     const TOT_ROW_H = mm(6);
-    const numTotRows = 3; // Summe + MwSt/ohne + Rechnungsbetrag
+    const numTotRows = 3;
     const totHeight = numTotRows * TOT_ROW_H + mm(2);
 
-    // Grauer Hintergrund für ganze Totals-Tabelle
-    page.drawRectangle({ x: LEFT, y: curY - totHeight, width: CWIDTH, height: totHeight, color: EAEAEA });
+    if (curY - totHeight < SAFE_BOTTOM) {
+      await newPage();
+    }
+
+    currentPage.drawRectangle({ x: LEFT, y: curY - totHeight, width: CWIDTH, height: totHeight, color: EAEAEA });
 
     let ty = curY - mm(2);
-
-    // Zeile 1: Summe Positionen ohne Mehrwertsteuer
     const subStr = fmtCHF(subtotal);
-    page.drawText('Summe Positionen ohne Mehrwertsteuer', {
-      x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK
-    });
-    page.drawText(subStr, {
-      x: RIGHT - fReg.widthOfTextAtSize(subStr, TOT_SIZE) - mm(2),
-      y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK
-    });
+    currentPage.drawText('Summe Positionen ohne Mehrwertsteuer', { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
+    currentPage.drawText(subStr, { x: RIGHT - fReg.widthOfTextAtSize(subStr, TOT_SIZE) - mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
     ty -= TOT_ROW_H;
 
-    // Zeile 2: MwSt oder "ohne Mehrwertsteuer"
     if (vatIncluded && vatRate > 0) {
       const vatStr = fmtCHF(vatAmount);
       const vatLbl = `zzgl. ${vatRate}% Mehrwertsteuer`;
-      page.drawText(vatLbl, { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
-      page.drawText(vatStr, {
-        x: RIGHT - fReg.widthOfTextAtSize(vatStr, TOT_SIZE) - mm(2),
-        y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK
-      });
+      currentPage.drawText(vatLbl, { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
+      currentPage.drawText(vatStr, { x: RIGHT - fReg.widthOfTextAtSize(vatStr, TOT_SIZE) - mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
     } else {
-      page.drawText('ohne Mehrwertsteuer', { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
+      currentPage.drawText('ohne Mehrwertsteuer', { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fReg, color: BLACK });
     }
     ty -= TOT_ROW_H;
 
-    // Trennlinie vor Rechnungsbetrag
-    page.drawLine({ start: { x: LEFT, y: ty + mm(1) }, end: { x: RIGHT, y: ty + mm(1) }, thickness: 0.75, color: BLACK });
+    currentPage.drawLine({ start: { x: LEFT, y: ty + mm(1) }, end: { x: RIGHT, y: ty + mm(1) }, thickness: 0.75, color: BLACK });
 
-    // Zeile 3: Rechnungsbetrag (fettgedruckt)
     const totStr = fmtCHF(total);
-    page.drawText('Rechnungsbetrag', { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fBold, color: BLACK });
-    page.drawText(totStr, {
-      x: RIGHT - fBold.widthOfTextAtSize(totStr, TOT_SIZE) - mm(2),
-      y: ty - mm(4), size: TOT_SIZE, font: fBold, color: BLACK
-    });
+    currentPage.drawText('Rechnungsbetrag', { x: LEFT + mm(2), y: ty - mm(4), size: TOT_SIZE, font: fBold, color: BLACK });
+    currentPage.drawText(totStr, { x: RIGHT - fBold.widthOfTextAtSize(totStr, TOT_SIZE) - mm(2), y: ty - mm(4), size: TOT_SIZE, font: fBold, color: BLACK });
 
     curY = curY - totHeight - mm(8);
-    signOffStartY = curY;
   }
 
-  // ── SIGN-OFF (Zahlungsbedingungen, Notizen, Schlusstext) ─────────────────
-  // .sign-off: margin-top=10mm, font-size=10pt
-  // Signoff-Texte exakt aus generator.js:
+  // ── SIGN-OFF (Zahlungsbedingungen, Notizen, Schlusstext, Gruss) ──────────
   const signOffMap = {
     angebot: 'Wir freuen uns, wenn diese Offerte Ihre Zustimmung findet. Bei Rückfragen stehen wir selbstverständlich jederzeit gerne zur Verfügung.',
     auftragsbestaetigung: 'Bei Rückfragen stehen wir selbstverständlich gerne zur Verfügung.',
@@ -651,48 +721,33 @@ async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logo
     rechnung: ''
   };
 
-  let soY = signOffStartY;
+  const writeLines = async (lines, size, font, color) => {
+    for (const line of lines) {
+      if (curY - mm(5.5) < SAFE_BOTTOM) { await newPage(); curY -= mm(3); }
+      currentPage.drawText(line, { x: LEFT, y: curY, size, font, color });
+      curY -= mm(5.5);
+    }
+  };
 
-  // Zahlungsbedingungen
   if (doc.payment_terms) {
-    const ptText = 'Zahlungsbedingungen: ' + doc.payment_terms;
-    const ptLines = wrapText(ptText, fReg, 10, CWIDTH);
-    for (const line of ptLines) {
-      page.drawText(line, { x: LEFT, y: soY, size: 10, font: fReg, color: BLACK });
-      soY -= mm(5.5);
-    }
-    soY -= mm(3);
+    await writeLines(wrapText('Zahlungsbedingungen: ' + doc.payment_terms, fReg, 10, CWIDTH), 10, fReg, BLACK);
+    curY -= mm(3);
   }
-
-  // Notizen
   if (doc.notes) {
-    const noteLines = wrapText(doc.notes, fReg, 10, CWIDTH);
-    for (const line of noteLines) {
-      page.drawText(line, { x: LEFT, y: soY, size: 10, font: fReg, color: BLACK });
-      soY -= mm(5.5);
-    }
-    soY -= mm(3);
+    await writeLines(wrapText(doc.notes, fReg, 10, CWIDTH), 10, fReg, BLACK);
+    curY -= mm(3);
   }
-
-  // Schluss-Text
   const signOffText = signOffMap[type] || '';
   if (signOffText) {
-    const soLines = wrapText(signOffText, fReg, 10, CWIDTH);
-    for (const line of soLines) {
-      page.drawText(line, { x: LEFT, y: soY, size: 10, font: fReg, color: BLACK });
-      soY -= mm(5.5);
-    }
-    soY -= mm(3);
+    await writeLines(wrapText(signOffText, fReg, 10, CWIDTH), 10, fReg, BLACK);
+    curY -= mm(3);
   }
 
-  // "Mit freundlichen Grüssen"
-  page.drawText('Mit freundlichen Grüssen', { x: LEFT, y: soY, size: 10, font: fReg, color: BLACK });
-  soY -= mm(5.5);
-  // Leerzeile (br)
-  soY -= mm(5.5);
-  // Name
+  if (curY - mm(16) < SAFE_BOTTOM) { await newPage(); curY -= mm(3); }
+  currentPage.drawText('Mit freundlichen Grüssen', { x: LEFT, y: curY, size: 10, font: fReg, color: BLACK });
+  curY -= mm(11);
   const signName = s(project.contact_person || settings.firma_name || '');
-  page.drawText(signName, { x: LEFT, y: soY, size: 10, font: fReg, color: BLACK });
+  currentPage.drawText(signName, { x: LEFT, y: curY, size: 10, font: fReg, color: BLACK });
 
   // ── FOOTER ───────────────────────────────────────────────────────────────
   // Originalvorlage: drei Spalten justify-content:space-between; padding 0 25mm
@@ -748,6 +803,21 @@ async function drawInvoicePage(pdfDoc, { doc, project, positions, settings, logo
     page.drawText(footerMid, { x: LEFT + leftW + gap, y: FOOTER_Y, size: FOOTER_SIZE, font: fReg, color: GRAY444 });
   }
   page.drawText(pageStr, { x: RIGHT - rightW, y: FOOTER_Y, size: FOOTER_SIZE, font: fReg, color: GRAY444 });
+
+  // ── WASSERZEICHEN (rechter Seitenrand, 6pt, gedreht 90°) ─────────────────
+  // Text: "ArjensProjectTool v1.0.0" — identifiziert Nutzer des Tools
+  // Position: rechter Rand (Marge), vertikal zentriert, sehr helles Grau
+  const WM_SIZE  = 6;
+  const WM_COLOR = rgb(0.75, 0.75, 0.75); // #bbb — subtil aber lesbar
+  const wmW      = fReg.widthOfTextAtSize(WATERMARK_TEXT, WM_SIZE);
+  page.drawText(WATERMARK_TEXT, {
+    x:      A4_W - mm(4),               // 4mm vom rechten Seitenrand
+    y:      (A4_H / 2) - (wmW / 2),    // vertikal mittig auf der Seite
+    size:   WM_SIZE,
+    font:   fReg,
+    color:  WM_COLOR,
+    rotate: degrees(90),                 // 90° gegen Uhrzeigersinn = von unten nach oben
+  });
 
   return total;
 
