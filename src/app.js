@@ -109,8 +109,23 @@ function renderProjectGrid(projects) {
   const countEl = document.getElementById('projectCount');
   countEl.textContent = `${projects.length} Projekt${projects.length !== 1 ? 'e' : ''}`;
 
+  // Onboarding-Hinweis: nur wenn Einstellungen noch nie ausgefüllt wurden
+  const onboardingHint = !settings.firma_plz ? `
+    <div style="grid-column:1/-1; background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:14px 18px; display:flex; align-items:flex-start; gap:12px; margin-bottom:4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>
+        <div style="font-size:13px; font-weight:600; color:#92400e; margin-bottom:3px;">Tipp für den Start</div>
+        <div style="font-size:12px; color:#78350f; line-height:1.6;">
+          Bevor du dein erstes Projekt erstellst: Hinterlege unter
+          <span onclick="navigate('settings')" style="text-decoration:underline; cursor:pointer; font-weight:600;">Einstellungen</span>
+          deine Adresse, Logo und IBAN, damit deine Dokumente vollständig sind.
+        </div>
+      </div>
+    </div>` : '';
+
   if (projects.length === 0) {
     grid.innerHTML = `
+      ${onboardingHint}
       <div class="empty-state" style="grid-column:1/-1">
         <div class="empty-state-icon">◈</div>
         <p>Noch keine Projekte vorhanden.</p>
@@ -119,7 +134,8 @@ function renderProjectGrid(projects) {
     return;
   }
 
-  grid.innerHTML = projects.map(p => {
+  grid.innerHTML = onboardingHint + projects.map(p => {
+
     const pills = Object.entries(TYPE_LABELS).map(([type, label]) => {
       const has = !!(p._docStatus?.[type]);
       return `<span class="pill ${has ? 'pill-active' : 'pill-inactive'}">${TYPE_SHORT[type]}</span>`;
