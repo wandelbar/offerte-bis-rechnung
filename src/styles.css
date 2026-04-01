@@ -142,6 +142,18 @@ input, textarea, select { font-family: var(--font); }
 }
 .bmc-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
 .bmc-icon { font-size: 16px; }
+.linkedin-btn {
+  display: inline-flex; align-items: center;
+  margin-top: 14px;
+  padding: 8px 18px;
+  background: var(--white); color: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 6px; font-size: 13px; font-weight: 600;
+  text-decoration: none; letter-spacing: -0.01em;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.linkedin-btn:hover { border-color: #0a66c2; color: #0a66c2; box-shadow: 0 4px 12px rgba(10,102,194,0.15); }
 
 /* ── PROJECT LIST ────────────────────────────────────────────── */
 .list-header {
