@@ -1069,13 +1069,35 @@ export async function generatePdf({ doc, project, positions, settings }) {
   return await pdfDoc.save();
 }
 
+/** Erkennt Mobile-Geräte (iOS, Android, iPad im Desktop-Modus) */
+function isMobileDevice() {
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
+  // iPad mit "Desktop anfordern" meldet sich als Mac, hat aber Touch
+  if (/Mac/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1) return true;
+  return false;
+}
+
 export async function downloadPdf({ doc, project, positions, settings }) {
   const pdfBytes = await generatePdf({ doc, project, positions, settings });
-
-  // PDF in neuem Tab öffnen (wie die Vorlagesoftware mit /api/documents/id/pdf)
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const url  = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-  // Speicher nach 60s freigeben (Nutzer hat dann Zeit das PDF zu speichern)
+
+  if (isMobileDevice()) {
+    // Mobile: direkter Download via <a download> — window.open() wird nach
+    // async-Calls von Safari/Chrome Mobile als Popup blockiert
+    const docNum = `${doc.base_number}-${String(doc.version).padStart(2, '0')}`;
+    const typeLabel = { angebot: 'Offerte', auftragsbestaetigung: 'Auftragsbestaetigung', lieferschein: 'Lieferschein', rechnung: 'Rechnung' }[doc.type] || doc.type;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${typeLabel}_${docNum}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } else {
+    // Desktop: neuer Tab (Verhalten unverändert)
+    window.open(url, '_blank');
+  }
+
+  // Speicher nach 60s freigeben
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
