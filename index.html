@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projektverwaltung</title>
+<meta name="description" content="Kostenlose Projektverwaltung mit Angeboten, Auftragsbestätigungen, Lieferscheinen und Rechnungen inkl. Swiss QR-Bill — direkt im Browser, keine Installation nötig.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── APP SHELL ───────────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header id="topbar">
+    <div class="topbar-brand" id="brandLink">
+      <div class="brand-logo" id="logoDisplay"></div>
+      <span class="brand-sep">│</span>
+      <span class="brand-label">Projektverwaltung</span>
+    </div>
+    <div class="topbar-breadcrumb" id="breadcrumb"></div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="navigate('settings')" title="Einstellungen">
+        Einstellungen
+      </button>
+    </div>
+  </header>
+
+  <!-- VIEWS -->
+  <main id="main">
+
+    <!-- PROJECT LIST VIEW -->
+    <div id="view-projects" class="view">
+      <div class="view-inner list-inner">
+        <div class="list-header">
+          <div>
+            <h1 class="page-title">Projekte</h1>
+            <p class="page-sub" id="projectCount"></p>
+          </div>
+          <div class="list-header-right">
+            <input type="text" id="projectSearch" placeholder="Suchen…" class="search-input" oninput="filterProjects(this.value)">
+            <button class="btn-primary" onclick="showProjectModal()">+ Neues Projekt</button>
+          </div>
+        </div>
+        <div id="projectGrid" class="project-grid"></div>
+      </div>
+    </div>
+
+    <!-- PROJECT DETAIL VIEW -->
+    <div id="view-project" class="view hidden">
+      <div class="view-inner project-inner">
+
+        <!-- Left panel -->
+        <aside class="project-aside">
+          <div class="aside-card">
+            <div class="aside-card-hdr">Projekt</div>
+            <div class="form-group">
+              <label class="field-label">Name</label>
+              <input type="text" class="field-input" id="pf-name" oninput="dirtyProject()">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Kundennummer</label>
+              <input type="text" class="field-input" id="pf-customerNumber" placeholder="z.B. 2010" oninput="dirtyProject()">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Sachbearbeiter</label>
+              <input type="text" class="field-input" id="pf-contact" oninput="dirtyProject()">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Beschreibung</label>
+              <textarea class="field-input" id="pf-description" rows="2" oninput="dirtyProject()"></textarea>
+            </div>
+            <button class="btn-save-aside" id="btnSaveProject" onclick="saveProjectSidebar()" style="display:none">Speichern</button>
+          </div>
+
+          <div class="aside-card">
+            <div class="aside-card-hdr">Empfänger</div>
+            <div class="form-group">
+              <label class="field-label">Firma</label>
+              <input type="text" class="field-input" id="pf-company" oninput="dirtyProject()" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Kontakt / Name</label>
+              <input type="text" class="field-input" id="pf-clientContact" oninput="dirtyProject()" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="field-label">Adresse</label>
+              <input type="text" class="field-input" id="pf-address" oninput="dirtyProject()">
+            </div>
+            <div class="form-group grid-2">
+              <div>
+                <label class="field-label">PLZ</label>
+                <input type="text" class="field-input" id="pf-plz" oninput="dirtyProject()">
+              </div>
+              <div>
+                <label class="field-label">Ort</label>
+                <input type="text" class="field-input" id="pf-ort" oninput="dirtyProject()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="field-label">Land</label>
+              <select class="field-input" id="pf-land" onchange="dirtyProject()">
+                <option>Schweiz</option>
+                <option>Deutschland</option>
+                <option>Österreich</option>
+              </select>
+            </div>
+            <button class="btn-save-aside" id="btnSaveClient" onclick="saveProjectSidebar()" style="display:none">Speichern</button>
+          </div>
+
+          <button class="btn-danger-sm" onclick="deleteProject()">Projekt löschen</button>
+        </aside>
+
+        <!-- Right panel: document tabs -->
+        <div class="project-main">
+          <div class="doc-tabs" id="docTabs">
+            <button class="doc-tab active" data-type="angebot" onclick="switchTab('angebot')">
+              <span class="tab-label">Offerte</span>
+              <span class="tab-badge" id="badge-angebot"></span>
+            </button>
+            <button class="doc-tab" data-type="auftragsbestaetigung" onclick="switchTab('auftragsbestaetigung')">
+              <span class="tab-label">Auftragsbestätigung</span>
+              <span class="tab-badge" id="badge-auftragsbestaetigung"></span>
+            </button>
+            <button class="doc-tab" data-type="lieferschein" onclick="switchTab('lieferschein')">
+              <span class="tab-label">Lieferschein</span>
+              <span class="tab-badge" id="badge-lieferschein"></span>
+            </button>
+            <button class="doc-tab" data-type="rechnung" onclick="switchTab('rechnung')">
+              <span class="tab-label">Rechnung</span>
+              <span class="tab-badge" id="badge-rechnung"></span>
+            </button>
+          </div>
+          <div class="doc-panel" id="docPanel"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div id="view-settings" class="view hidden">
+      <div class="view-inner list-inner">
+        <div class="list-header">
+          <div>
+            <h1 class="page-title">Einstellungen</h1>
+            <p class="page-sub">Firmendaten für PDF-Ausgabe</p>
+          </div>
+          <button class="btn-primary" onclick="saveSettings()">Speichern</button>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <div class="settings-card-hdr">Firmendaten</div>
+            <div class="form-2col">
+              <div class="form-group"><label class="field-label">Firmenname</label><input type="text" class="field-input" id="s-firma_name"></div>
+              <div class="form-group"><label class="field-label">Rechtsgültiger Titel</label><input type="text" class="field-input" id="s-firma_titel" placeholder="z.B. redQ AG"></div>
+              <div class="form-group"><label class="field-label">Adresse</label><input type="text" class="field-input" id="s-firma_adresse"></div>
+              <div class="form-group"><label class="field-label">PLZ</label><input type="text" class="field-input" id="s-firma_plz"></div>
+              <div class="form-group"><label class="field-label">Ort</label><input type="text" class="field-input" id="s-firma_ort"></div>
+              <div class="form-group"><label class="field-label">Land</label><select class="field-input" id="s-firma_land"><option>Schweiz</option><option>Deutschland</option><option>Österreich</option></select></div>
+              <div class="form-group"><label class="field-label">UID / USt-Nr.</label><input type="text" class="field-input" id="s-firma_uid"></div>
+              <div class="form-group"><label class="field-label">E-Mail</label><input type="email" class="field-input" id="s-firma_email"></div>
+              <div class="form-group"><label class="field-label">Telefon</label><input type="text" class="field-input" id="s-firma_telefon"></div>
+              <div class="form-group"><label class="field-label">Website</label><input type="text" class="field-input" id="s-firma_website"></div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-hdr">Bank</div>
+            <div class="form-group"><label class="field-label">IBAN</label><input type="text" class="field-input" id="s-firma_iban"></div>
+            <div class="form-group"><label class="field-label">Bank</label><input type="text" class="field-input" id="s-firma_bank"></div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-hdr">
+              Logo
+              <span class="settings-hint">(empfohlen: 800 × 200 px, PNG/JPG)</span>
+            </div>
+            <div class="logo-upload-zone" id="logoZone" onclick="document.getElementById('logoFile').click()">
+              <img id="logoPreview" src="" style="display:none;max-height:64px;max-width:240px;object-fit:contain;">
+              <div id="logoPlaceholder">
+                <span>Klicken zum Hochladen</span>
+              </div>
+            </div>
+            <input type="file" id="logoFile" accept="image/png,image/jpeg" style="display:none" onchange="uploadLogo(this)">
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-hdr">Nummerierung</div>
+            <div class="form-group">
+              <label class="field-label">Nächste Dokument-Nr.</label>
+              <input type="number" class="field-input" id="s-next_doc_number">
+              <p class="field-hint">Nur ändern wenn nötig — wird automatisch hochgezählt.</p>
+            </div>
+          </div>
+
+          <div class="settings-card" style="grid-column: 1 / -1;">
+            <div class="settings-card-hdr">Über diese App</div>
+            <p style="font-size:12px;color:var(--sub);line-height:1.6;">
+              Diese App läuft vollständig in Ihrem Browser. Alle Daten (Projekte, Dokumente, Einstellungen) werden lokal in Ihrem Browser gespeichert (IndexedDB) — nichts wird auf externe Server übertragen.
+              <br><br>
+              PDF-Generierung, Swiss QR-Bill und alle Berechnungen erfolgen direkt in Ihrem Browser — kein Server nötig, keine monatlichen Kosten, kostenlos für alle.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── TOAST ──────────────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ── MODAL ──────────────────────────────────────────────────── -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span id="modalTitle">Neues Projekt</span>
+      <button class="modal-close" onclick="closeAllModals()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modal-editId">
+      <div class="form-group"><label class="field-label">Projektname *</label><input type="text" class="field-input" id="modal-name" placeholder="z.B. Webseite Redesign"></div>
+      <div class="form-group"><label class="field-label">Beschreibung</label><textarea class="field-input" id="modal-desc" rows="2"></textarea></div>
+      <div class="form-group"><label class="field-label">Sachbearbeiter</label><input type="text" class="field-input" id="modal-contact"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeAllModals()">Abbrechen</button>
+      <button class="btn-primary" onclick="saveNewProject()">Erstellen</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
