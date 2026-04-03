@@ -198,9 +198,9 @@
           <div class="settings-card" style="grid-column: 1 / -1;">
             <div class="settings-card-hdr">Über diese App</div>
             <p style="font-size:12px;color:var(--sub);line-height:1.6;">
-              Entwickelt von <strong style="color:var(--fg);">Arjen Hoti</strong> — weil mich frustriert, dass für grundlegende administrative Aufgaben wie das Erstellen einer Offerte oder QR-Rechnung oft teure Software-Abos vorausgesetzt werden. Gerade für kleine Firmen, Freelancer und Kreative summiert sich das schnell zu einer unnötigen finanziellen Belastung.
+              Entwickelt von <strong style="color:var(--fg);">Arjen Hoti</strong>, weil mich frustriert, dass für grundlegende administrative Aufgaben wie das Erstellen einer Offerte oder QR-Rechnung oft teure Software-Abos vorausgesetzt werden. Gerade für kleine Firmen, Freelancer und Kreative summiert sich das schnell zu einer unnötigen finanziellen Belastung.
               <br><br>
-              Deswegen habe ich diese App entwickelt und für alle <strong style="color:var(--fg);">kostenlos</strong> zugänglich gemacht. Sie läuft vollständig im Browser — alle Daten werden lokal gespeichert (IndexedDB), nichts wird auf externe Server übertragen. Kein Login. Keine Installation. Keine monatlichen Kosten.
+              Deswegen habe ich diese App entwickelt und für alle <strong style="color:var(--fg);">kostenlos</strong> zugänglich gemacht. Sie läuft vollständig im Browser. Alle Daten werden lokal gespeichert (IndexedDB), nichts wird auf externe Server übertragen. Kein Login. Keine Installation. Keine monatlichen Kosten.
             </p>
             <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;">
               <a href="https://www.linkedin.com/in/arjenhoti" target="_blank" rel="noopener noreferrer" class="linkedin-btn">Kontakt via LinkedIn</a>
@@ -209,6 +209,53 @@
                 <span>Buy me a coffee</span>
               </a>
             </div>
+          </div>
+
+          <div class="settings-card" style="grid-column: 1 / -1;">
+            <div class="settings-card-hdr">Häufig gestellte Fragen</div>
+
+            <details class="faq-item">
+              <summary class="faq-question">Warum muss ich mich nicht einloggen?</summary>
+              <div class="faq-answer">
+                <p>Diese App läuft vollständig in deinem Browser und speichert alle Daten lokal auf deinem Gerät (IndexedDB). Es gibt keinen Server, der deine Daten verwaltet, deshalb ist kein Login notwendig. Deine Daten gehören nur dir und verlassen deinen Browser nicht.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Sind meine Daten sicher?</summary>
+              <div class="faq-answer">
+                <p>Ja. Alle Eingaben (Firmendaten, Projekte, Rechnungen, Logo) werden ausschliesslich lokal in deinem Browser gespeichert. Es findet keinerlei Übertragung an externe Server statt, weder beim Öffnen der App noch während der Nutzung. Nicht einmal der Betreiber hat Zugriff auf deine Daten.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Was passiert, wenn ich den Browser-Cache lösche?</summary>
+              <div class="faq-answer">
+                <p>Da alle Daten lokal im Browser gespeichert sind, gehen sie verloren, wenn du den Browsercache oder die Websitedaten löschst. Es gibt aktuell keine automatische Backup-Funktion. Wir empfehlen dir deshalb, wichtige Dokumente regelmässig als PDF zu exportieren.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Kann ich die App auf mehreren Geräten nutzen?</summary>
+              <div class="faq-answer">
+                <p>Die App ist bewusst lokal und ohne Sync-Funktion konzipiert. Daten, die du auf einem Gerät eingibst, sind nicht automatisch auf einem anderen verfügbar. Du kannst die App parallel auf mehreren Geräten verwenden, die Daten sind aber jeweils gerätespezifisch.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Ist die App wirklich dauerhaft kostenlos?</summary>
+              <div class="faq-answer">
+                <p>Ja, vollständig kostenlos, ohne Einschränkungen und ohne versteckte Kosten. Es gibt keine Premium-Version, kein Abo und keine Werbung. Falls dir die App nützlich ist, freue ich mich über einen freiwilligen Kaffee über den Link unten.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Wie kann ich meine Daten sichern oder exportieren?</summary>
+              <div class="faq-answer">
+                <p>Zurzeit gibt es keine automatische Export-Funktion für alle Daten auf einmal. Einzelne Dokumente kannst du jederzeit als PDF exportieren. Eine vollständige Daten-Export-Funktion (z. B. als JSON) ist für eine spätere Version geplant.</p>
+              </div>
+            </details>
+
           </div>
         </div>
       </div>
