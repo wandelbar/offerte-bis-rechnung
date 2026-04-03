@@ -419,10 +419,126 @@ textarea.field-input { resize: vertical; min-height: 56px; line-height: 1.5; }
 .toast.success { background: #15803d; }
 .toast.error { background: #b91c1c; }
 
+/* ── FOOTER ──────────────────────────────────────────────────── */
+#app-footer {
+  flex-shrink: 0;
+  height: 32px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+.footer-copy {
+  font-size: 11px;
+  color: var(--sub);
+  letter-spacing: 0;
+}
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-link {
+  font-size: 11px;
+  color: var(--sub);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 0;
+  transition: color 0.1s;
+}
+.footer-link:hover { color: var(--red); }
+.footer-sep { font-size: 10px; color: #cbd5e1; }
+
+/* ── STATIC PAGES (Impressum / Datenschutz) ──────────────────── */
+.static-page-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.static-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 12px;
+  color: var(--sub);
+  font-weight: 500;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.1s;
+  flex-shrink: 0;
+}
+.static-back-btn:hover { color: var(--dark); border-color: #94a3b8; }
+.static-page-body {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.static-page-body section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.static-page-body h2 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+.static-page-body p, .static-page-body li {
+  font-size: 13px;
+  color: var(--mid);
+  line-height: 1.7;
+}
+.static-page-body ul {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.static-page-body a {
+  color: var(--blue);
+  text-decoration: none;
+}
+.static-page-body a:hover { text-decoration: underline; }
+.static-page-body section + section p { margin-top: 6px; }
+
+/* Privacy highlight section */
+.privacy-highlight {
+  background: var(--blue-bg) !important;
+  border-color: #bfdbfe !important;
+}
+.privacy-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+.privacy-badge svg { flex-shrink: 0; }
+.privacy-badge strong { font-size: 14px; font-weight: 700; }
+.privacy-highlight p { color: #1e40af; }
+.privacy-highlight strong { color: #1d4ed8; }
+
 @media (max-width: 900px) {
   .project-inner { grid-template-columns: 1fr; }
   .settings-grid { grid-template-columns: 1fr; }
   .form-2col { grid-template-columns: 1fr; }
   /* Verhindert dass Buttons hinter iOS Safari Toolbar verschwinden */
   .view { padding-bottom: 100px; }
+  #app-footer { flex-direction: column; height: auto; padding: 8px 20px; gap: 4px; }
 }

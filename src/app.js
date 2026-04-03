@@ -58,6 +58,14 @@ function navigate(view) {
     loadSettingsView();
     setBreadcrumb([{ label: 'Einstellungen' }]);
     showView('settings');
+  } else if (view === 'impressum') {
+    currentProject = null;
+    setBreadcrumb([{ label: 'Impressum' }]);
+    showView('impressum');
+  } else if (view === 'datenschutz') {
+    currentProject = null;
+    setBreadcrumb([{ label: 'Datenschutz' }]);
+    showView('datenschutz');
   }
 }
 
