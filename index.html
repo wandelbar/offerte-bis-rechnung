@@ -226,36 +226,33 @@
         </div>
         <div class="static-page-body">
           <section>
-            <h2>Anbieter</h2>
+            <h2>Betreiber</h2>
             <p>
               Arjen Hoti<br>
+              Busswilstrasse 28B<br>
+              3250 Lyss<br>
               Schweiz
-            </p>
-            <p>
-              <strong>Kontakt:</strong><br>
-              <a href="https://www.linkedin.com/in/arjenhoti" target="_blank" rel="noopener noreferrer">linkedin.com/in/arjenhoti</a>
             </p>
           </section>
 
           <section>
-            <h2>Zweck dieser Applikation</h2>
-            <p>
-              <em>offerte-bis-rechnung.ch</em> ist eine kostenlose, werbefreie Browser-Applikation zur Erstellung von Offertes, Auftragsbestätigungen, Lieferscheinen und Rechnungen inklusive Swiss QR-Bill. Die App richtet sich an Kleinunternehmen, Freelancer und Selbstständige in der Schweiz.
-            </p>
+            <h2>Kontakt</h2>
+            <p>E-Mail: <a href="mailto:arjen@offerte-bis-rechnung.ch">arjen@offerte-bis-rechnung.ch</a></p>
+          </section>
+
+          <section>
+            <h2>Angaben gemäss Art. 3 Abs. 1 lit. s UWG</h2>
+            <p>Diese Website wird privat betrieben und ist kostenlos nutzbar. Es besteht keine Gewinnabsicht.</p>
           </section>
 
           <section>
             <h2>Haftungsausschluss</h2>
-            <p>
-              Die Nutzung dieser App erfolgt auf eigene Verantwortung. Für die Richtigkeit, Vollständigkeit und Aktualität der erstellten Dokumente wird keine Gewähr übernommen. Die App ersetzt keine Rechts- oder Steuerberatung.
-            </p>
+            <p>Die Inhalte dieser Website wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird jedoch keine Gewähr übernommen. Für externe Links wird keine Verantwortung übernommen. Für den Inhalt verlinkter Seiten sind ausschliesslich deren Betreiber verantwortlich.</p>
           </section>
 
           <section>
             <h2>Urheberrecht</h2>
-            <p>
-              Der Quellcode ist unter der MIT-Lizenz veröffentlicht und steht auf GitHub zur Verfügung. Inhalte, die Nutzer in der App erfassen, liegen vollständig in deren Verantwortung.
-            </p>
+            <p>Die auf dieser Website veröffentlichten Inhalte unterliegen dem Schweizer Urheberrecht. Der Quellcode ist unter der <a href="https://github.com/wandelbar/offerte-bis-rechnung/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT-Lizenz</a> frei verfügbar.</p>
           </section>
         </div>
       </div>
@@ -277,41 +274,76 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <strong>Deine Daten bleiben bei dir</strong>
             </div>
-            <p>Diese App speichert <strong>alle Daten ausschliesslich lokal in deinem Browser</strong> (IndexedDB). Es werden keine Daten an externe Server übertragen — weder beim ersten Öffnen, noch während der Nutzung. Es gibt keinen Login, weil es keinen Server gibt, der dich authentifizieren müsste.</p>
+            <p>Diese App speichert <strong>alle Daten ausschliesslich lokal in deinem Browser</strong> (IndexedDB). Es werden keine Daten an externe Server übertragen. Weder beim ersten Öffnen, noch während der Nutzung. Es gibt keinen Login, weil es keinen Server gibt, der dich authentifizieren müsste.</p>
           </section>
 
           <section>
-            <h2>Was wird gespeichert?</h2>
-            <p>Alle Eingaben (Firmendaten, Projekte, Dokumente, Logo) werden in der <strong>IndexedDB deines Browsers</strong> auf deinem eigenen Gerät gespeichert. Diese Daten sind für niemanden ausser dir zugänglich — nicht einmal für den Betreiber dieser App.</p>
+            <h2>1. Verantwortliche Person</h2>
+            <p>Verantwortlich für den Betrieb dieser Website im Sinne des Schweizer Datenschutzgesetzes (DSG) ist:</p>
+            <p>
+              Arjen Hoti<br>
+              Busswilstrasse 28B<br>
+              3250 Lyss<br>
+              Schweiz<br>
+              E-Mail: <a href="mailto:arjen@offerte-bis-rechnung.ch">arjen@offerte-bis-rechnung.ch</a>
+            </p>
           </section>
 
           <section>
-            <h2>Was wird <em>nicht</em> gespeichert?</h2>
+            <h2>2. Grundsatz: Lokale Datenverarbeitung</h2>
+            <p>offerte-bis-rechnung.ch ist eine vollständig im Browser laufende Webanwendung. Die App verarbeitet alle eingegebenen Daten, einschliesslich Kundendaten, Projektinformationen, Positionen und Beträge, ausschliesslich lokal auf deinem Endgerät. Es findet keinerlei Übertragung dieser Daten an externe Server statt.</p>
+            <p style="margin-top:8px">Die lokale Speicherung erfolgt über <strong>IndexedDB</strong>, eine vom Browser bereitgestellte Datenbank, die auf deinem Gerät verbleibt. PDF-Generierung, QR-Bill-Erstellung und alle Berechnungen werden ebenfalls lokal im Browser durchgeführt.</p>
+          </section>
+
+          <section>
+            <h2>3. Welche Daten werden verarbeitet?</h2>
             <ul>
-              <li>Keine Cookies (ausser technisch notwendiger Browser-Cache)</li>
-              <li>Keine Tracking- oder Analyse-Tools</li>
-              <li>Keine Werbung</li>
-              <li>Keine Nutzungsstatistiken</li>
-              <li>Keine Übertragung an Dritte</li>
+              <li><strong>Von dir eingegebene Geschäftsdaten</strong> (Firmenname, Adressen, Bankverbindung, Kundendaten, Positionsbeschreibungen etc.) werden ausschliesslich lokal in deinem Browser gespeichert und nicht übertragen.</li>
+              <li><strong>Server-Logdaten von GitHub Pages</strong> werden beim Abruf der Website durch GitHub automatisch erfasst (siehe Abschnitt 4).</li>
             </ul>
           </section>
 
           <section>
-            <h2>Externe Dienste</h2>
-            <p>Die App lädt lediglich die Schriftart <em>Inter</em> von Google Fonts. Dabei kann Google die IP-Adresse des Nutzers sehen. Falls du das vermeiden möchtest, kannst du die App offline nutzen, nachdem sie einmalig geladen wurde (Progressive Web App).</p>
+            <h2>4. GitHub Pages – Hosting</h2>
+            <p>Diese Website wird über <strong>GitHub Pages</strong> gehostet, einen Dienst der GitHub, Inc. (88 Colin P Kelly Jr St, San Francisco, CA 94107, USA). Beim Aufruf der Website überträgt dein Browser technisch bedingt Daten an die Server von GitHub, darunter deine IP-Adresse, Browsertyp, Betriebssystem, Referrer-URL sowie Datum und Uhrzeit des Abrufs.</p>
+            <p style="margin-top:8px">Diese Daten werden von GitHub zu technischen und sicherheitsbezogenen Zwecken verarbeitet. GitHub ist nach dem EU-US Data Privacy Framework zertifiziert. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von GitHub</a>.</p>
           </section>
 
           <section>
-            <h2>Datenverlust / Datenlöschung</h2>
-            <p>Da alle Daten ausschliesslich lokal im Browser liegen, gehen sie verloren, wenn du den Browser-Cache oder die Webseitendaten löschst. Es gibt aktuell keine automatische Backup-Funktion. Wir empfehlen, wichtige Dokumente als PDF zu exportieren.</p>
+            <h2>5. Cookies und Tracking</h2>
+            <p>Diese Website setzt keine Tracking-Cookies und verwendet keine Analyse- oder Werbedienste. Es werden keine Nutzerprofile erstellt.</p>
+            <p style="margin-top:8px">Dein Browser nutzt technisch notwendige Speichermechanismen (IndexedDB), um die von dir eingegebenen Daten zu speichern. Diese Speicherung erfolgt ausschliesslich auf deinem Gerät und dient allein der Funktionalität der App.</p>
           </section>
 
           <section>
-            <h2>Kontakt bei Fragen</h2>
-            <p>
-              Bei Fragen zum Datenschutz erreichst du den Betreiber via
-              <a href="https://www.linkedin.com/in/arjenhoti" target="_blank" rel="noopener noreferrer">LinkedIn</a>.
-            </p>
+            <h2>6. Externe Links</h2>
+            <p>Die Website enthält einen Link zu <strong>Buy Me a Coffee</strong> (<a href="https://buymeacoffee.com" target="_blank" rel="noopener noreferrer">buymeacoffee.com</a>), über den freiwillige Unterstützungsbeiträge möglich sind. Beim Klick auf diesen Link verlässt du diese Website. Für die Datenverarbeitung auf der verlinkten Seite ist der jeweilige Anbieter verantwortlich.</p>
+          </section>
+
+          <section>
+            <h2>7. Deine Rechte</h2>
+            <p>Gemäss dem Schweizer Datenschutzgesetz (DSG) hast du folgende Rechte:</p>
+            <ul>
+              <li><strong>Auskunft:</strong> Du kannst Auskunft darüber verlangen, welche Personendaten über dich bearbeitet werden.</li>
+              <li><strong>Berichtigung:</strong> Unrichtige Personendaten können von dir berichtigt werden. Lokal gespeicherte Daten kannst du direkt in der App verwalten.</li>
+              <li><strong>Löschung:</strong> Du kannst die lokal gespeicherten Daten jederzeit selbst über die Einstellungen der App oder die Entwicklertools deines Browsers löschen.</li>
+              <li><strong>Beschwerde:</strong> Du hast das Recht, eine Beschwerde beim <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer">Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB)</a> einzureichen.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>8. Datensicherheit</h2>
+            <p>Die Übertragung der Website erfolgt verschlüsselt via HTTPS. Da keine Personendaten auf eigenen Servern gespeichert werden, entfällt das Risiko eines Datenlecks auf Betreiberseite. Für die Sicherheit der lokal auf deinem Gerät gespeicherten Daten ist dein Gerät und dein Browser verantwortlich.</p>
+          </section>
+
+          <section>
+            <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+            <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden, z. B. wenn sich technische Gegebenheiten oder gesetzliche Anforderungen ändern. Die jeweils aktuelle Version ist auf dieser Seite abrufbar. Stand: April 2026.</p>
+          </section>
+
+          <section>
+            <h2>10. Kontakt</h2>
+            <p>Bei Fragen zum Datenschutz kannst du dich per E-Mail an <a href="mailto:arjen@offerte-bis-rechnung.ch">arjen@offerte-bis-rechnung.ch</a> wenden.</p>
           </section>
         </div>
       </div>
