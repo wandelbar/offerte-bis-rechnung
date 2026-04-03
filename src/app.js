@@ -806,4 +806,5 @@ window.closeModal = closeModal;
 window.closeAllModals = closeAllModals;
 
 // ── Start ─────────────────────────────────────────────────────────────
+document.getElementById('copyright-year').textContent = new Date().getFullYear();
 init();
