@@ -58,6 +58,14 @@ function navigate(view) {
     loadSettingsView();
     setBreadcrumb([{ label: 'Einstellungen' }]);
     showView('settings');
+  } else if (view === 'impressum') {
+    currentProject = null;
+    setBreadcrumb([{ label: 'Impressum' }]);
+    showView('impressum');
+  } else if (view === 'datenschutz') {
+    currentProject = null;
+    setBreadcrumb([{ label: 'Datenschutz' }]);
+    showView('datenschutz');
   }
 }
 
@@ -798,4 +806,17 @@ window.closeModal = closeModal;
 window.closeAllModals = closeAllModals;
 
 // ── Start ─────────────────────────────────────────────────────────────
+document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+// E-Mail-Schutz: zur Laufzeit zusammengesetzt, nicht im HTML-Source
+(function() {
+  const u = 'arjen', d = 'offerte-bis-rechnung', t = 'ch';
+  const addr = u + '\u0040' + d + '.' + t;
+  document.querySelectorAll('a.contact-email').forEach(a => {
+    a.href = 'mailto:' + addr;
+    a.textContent = addr;
+    a.style.color = 'var(--blue)';
+    a.style.textDecoration = 'none';
+  });
+})();
 init();

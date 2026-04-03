@@ -198,9 +198,11 @@
           <div class="settings-card" style="grid-column: 1 / -1;">
             <div class="settings-card-hdr">Über diese App</div>
             <p style="font-size:12px;color:var(--sub);line-height:1.6;">
-              Entwickelt von <strong style="color:var(--fg);">Arjen Hoti</strong> — weil mich frustriert, dass für grundlegende administrative Aufgaben wie das Erstellen einer Offerte oder QR-Rechnung oft teure Software-Abos vorausgesetzt werden. Gerade für kleine Firmen, Freelancer und Kreative summiert sich das schnell zu einer unnötigen finanziellen Belastung.
+              Entwickelt von <strong style="color:var(--fg);">Arjen Hoti</strong>, weil mich frustriert, dass für grundlegende administrative Aufgaben wie das Erstellen einer Offerte oder QR-Rechnung oft teure Software-Abos vorausgesetzt werden. Gerade für kleine Firmen, Freelancer und Kreative summiert sich das schnell zu einer unnötigen finanziellen Belastung.
               <br><br>
-              Deswegen habe ich diese App entwickelt und für alle <strong style="color:var(--fg);">kostenlos</strong> zugänglich gemacht. Sie läuft vollständig im Browser — alle Daten werden lokal gespeichert (IndexedDB), nichts wird auf externe Server übertragen. Kein Login. Keine Installation. Keine monatlichen Kosten.
+              Deswegen habe ich diese App entwickelt und für alle <strong style="color:var(--fg);">kostenlos</strong> zugänglich gemacht. Sie läuft vollständig im Browser. Alle Daten werden lokal gespeichert (IndexedDB), nichts wird auf externe Server übertragen. Kein Login. Keine Installation. Keine monatlichen Kosten.
+              <br><br>
+              Der Code ist öffentlich zugänglich unter: <a href="https://github.com/wandelbar/offerte-bis-rechnung" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none;font-weight:500;">github.com/wandelbar/offerte-bis-rechnung</a>
             </p>
             <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;">
               <a href="https://www.linkedin.com/in/arjenhoti" target="_blank" rel="noopener noreferrer" class="linkedin-btn">Kontakt via LinkedIn</a>
@@ -210,11 +212,204 @@
               </a>
             </div>
           </div>
+
+          <div class="settings-card" style="grid-column: 1 / -1;">
+            <div class="settings-card-hdr">Häufig gestellte Fragen</div>
+
+            <details class="faq-item">
+              <summary class="faq-question">Warum muss ich mich nicht einloggen?</summary>
+              <div class="faq-answer">
+                <p>Diese App läuft vollständig in deinem Browser und speichert alle Daten lokal auf deinem Gerät (IndexedDB). Es gibt keinen Server, der deine Daten verwaltet, deshalb ist kein Login notwendig. Deine Daten gehören nur dir und verlassen deinen Browser nicht.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Sind meine Daten sicher?</summary>
+              <div class="faq-answer">
+                <p>Ja. Alle Eingaben (Firmendaten, Projekte, Rechnungen, Logo) werden ausschliesslich lokal in deinem Browser gespeichert. Es findet keinerlei Übertragung an externe Server statt, weder beim Öffnen der App noch während der Nutzung. Nicht einmal der Betreiber hat Zugriff auf deine Daten.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Was passiert, wenn ich den Browser-Cache lösche?</summary>
+              <div class="faq-answer">
+                <p>Da alle Daten lokal im Browser gespeichert sind, gehen sie verloren, wenn du den Browsercache oder die Websitedaten löschst. Es gibt aktuell keine automatische Backup-Funktion. Wir empfehlen dir deshalb, wichtige Dokumente regelmässig als PDF zu exportieren.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Kann ich die App auf mehreren Geräten nutzen?</summary>
+              <div class="faq-answer">
+                <p>Die App ist bewusst lokal und ohne Sync-Funktion konzipiert. Daten, die du auf einem Gerät eingibst, sind nicht automatisch auf einem anderen verfügbar. Du kannst die App parallel auf mehreren Geräten verwenden, die Daten sind aber jeweils gerätespezifisch.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Ist die App wirklich dauerhaft kostenlos?</summary>
+              <div class="faq-answer">
+                <p>Ja, vollständig kostenlos, ohne Einschränkungen und ohne versteckte Kosten. Es gibt keine Premium-Version, kein Abo und keine Werbung. Falls dir die App nützlich ist, freue ich mich über einen freiwilligen Kaffee über den Link unten.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">Wie kann ich meine Daten sichern oder exportieren?</summary>
+              <div class="faq-answer">
+                <p>Zurzeit gibt es keine automatische Export-Funktion für alle Daten auf einmal. Einzelne Dokumente kannst du jederzeit als PDF exportieren. Eine vollständige Daten-Export-Funktion (z. B. als JSON) ist für eine spätere Version geplant.</p>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPRESSUM VIEW -->
+    <div id="view-impressum" class="view hidden">
+      <div class="view-inner list-inner">
+        <div class="static-page-header">
+          <button class="static-back-btn" onclick="navigate('projects')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Zurück
+          </button>
+          <h1 class="page-title">Impressum</h1>
+        </div>
+        <div class="static-page-body">
+          <section>
+            <h2>Betreiber</h2>
+            <p>
+              Arjen Hoti<br>
+              Busswilstrasse 28B<br>
+              3250 Lyss<br>
+              Schweiz
+            </p>
+          </section>
+
+          <section>
+            <h2>Kontakt</h2>
+            <p>E-Mail: <a class="contact-email"></a></p>
+          </section>
+
+          <section>
+            <h2>Angaben gemäss Art. 3 Abs. 1 lit. s UWG</h2>
+            <p>Diese Website wird privat betrieben und ist kostenlos nutzbar. Es besteht keine Gewinnabsicht.</p>
+          </section>
+
+          <section>
+            <h2>Haftungsausschluss</h2>
+            <p>Die Inhalte dieser Website wurden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird jedoch keine Gewähr übernommen. Für externe Links wird keine Verantwortung übernommen. Für den Inhalt verlinkter Seiten sind ausschliesslich deren Betreiber verantwortlich.</p>
+          </section>
+
+          <section>
+            <h2>Urheberrecht</h2>
+            <p>Die auf dieser Website veröffentlichten Inhalte unterliegen dem Schweizer Urheberrecht. Der Quellcode ist unter der <a href="https://github.com/wandelbar/offerte-bis-rechnung/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT-Lizenz</a> frei verfügbar.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATENSCHUTZ VIEW -->
+    <div id="view-datenschutz" class="view hidden">
+      <div class="view-inner list-inner">
+        <div class="static-page-header">
+          <button class="static-back-btn" onclick="navigate('projects')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Zurück
+          </button>
+          <h1 class="page-title">Datenschutz</h1>
+        </div>
+        <div class="static-page-body">
+          <section class="privacy-highlight">
+            <div class="privacy-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <strong>Deine Daten bleiben bei dir</strong>
+            </div>
+            <p>Diese App speichert <strong>alle Daten ausschliesslich lokal in deinem Browser</strong> (IndexedDB). Es werden keine Daten an externe Server übertragen. Weder beim ersten Öffnen, noch während der Nutzung. Es gibt keinen Login, weil es keinen Server gibt, der dich authentifizieren müsste.</p>
+          </section>
+
+          <section>
+            <h2>1. Verantwortliche Person</h2>
+            <p>Verantwortlich für den Betrieb dieser Website im Sinne des Schweizer Datenschutzgesetzes (DSG) ist:</p>
+            <p>
+              Arjen Hoti<br>
+              Busswilstrasse 28B<br>
+              3250 Lyss<br>
+              Schweiz<br>
+              E-Mail: <a class="contact-email"></a>
+            </p>
+          </section>
+
+          <section>
+            <h2>2. Grundsatz: Lokale Datenverarbeitung</h2>
+            <p>offerte-bis-rechnung.ch ist eine vollständig im Browser laufende Webanwendung. Die App verarbeitet alle eingegebenen Daten, einschliesslich Kundendaten, Projektinformationen, Positionen und Beträge, ausschliesslich lokal auf deinem Endgerät. Es findet keinerlei Übertragung dieser Daten an externe Server statt.</p>
+            <p style="margin-top:8px">Die lokale Speicherung erfolgt über <strong>IndexedDB</strong>, eine vom Browser bereitgestellte Datenbank, die auf deinem Gerät verbleibt. PDF-Generierung, QR-Bill-Erstellung und alle Berechnungen werden ebenfalls lokal im Browser durchgeführt.</p>
+          </section>
+
+          <section>
+            <h2>3. Welche Daten werden verarbeitet?</h2>
+            <ul>
+              <li><strong>Von dir eingegebene Geschäftsdaten</strong> (Firmenname, Adressen, Bankverbindung, Kundendaten, Positionsbeschreibungen etc.) werden ausschliesslich lokal in deinem Browser gespeichert und nicht übertragen.</li>
+              <li><strong>Server-Logdaten von GitHub Pages</strong> werden beim Abruf der Website durch GitHub automatisch erfasst (siehe Abschnitt 4).</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>4. GitHub Pages – Hosting</h2>
+            <p>Diese Website wird über <strong>GitHub Pages</strong> gehostet, einen Dienst der GitHub, Inc. (88 Colin P Kelly Jr St, San Francisco, CA 94107, USA). Beim Aufruf der Website überträgt dein Browser technisch bedingt Daten an die Server von GitHub, darunter deine IP-Adresse, Browsertyp, Betriebssystem, Referrer-URL sowie Datum und Uhrzeit des Abrufs.</p>
+            <p style="margin-top:8px">Diese Daten werden von GitHub zu technischen und sicherheitsbezogenen Zwecken verarbeitet. GitHub ist nach dem EU-US Data Privacy Framework zertifiziert. Weitere Informationen findest du in der <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von GitHub</a>.</p>
+          </section>
+
+          <section>
+            <h2>5. Cookies und Tracking</h2>
+            <p>Diese Website setzt keine Tracking-Cookies und verwendet keine Analyse- oder Werbedienste. Es werden keine Nutzerprofile erstellt.</p>
+            <p style="margin-top:8px">Dein Browser nutzt technisch notwendige Speichermechanismen (IndexedDB), um die von dir eingegebenen Daten zu speichern. Diese Speicherung erfolgt ausschliesslich auf deinem Gerät und dient allein der Funktionalität der App.</p>
+          </section>
+
+          <section>
+            <h2>6. Externe Links</h2>
+            <p>Die Website enthält einen Link zu <strong>Buy Me a Coffee</strong> (<a href="https://buymeacoffee.com" target="_blank" rel="noopener noreferrer">buymeacoffee.com</a>), über den freiwillige Unterstützungsbeiträge möglich sind. Beim Klick auf diesen Link verlässt du diese Website. Für die Datenverarbeitung auf der verlinkten Seite ist der jeweilige Anbieter verantwortlich.</p>
+          </section>
+
+          <section>
+            <h2>7. Deine Rechte</h2>
+            <p>Gemäss dem Schweizer Datenschutzgesetz (DSG) hast du folgende Rechte:</p>
+            <ul>
+              <li><strong>Auskunft:</strong> Du kannst Auskunft darüber verlangen, welche Personendaten über dich bearbeitet werden.</li>
+              <li><strong>Berichtigung:</strong> Unrichtige Personendaten können von dir berichtigt werden. Lokal gespeicherte Daten kannst du direkt in der App verwalten.</li>
+              <li><strong>Löschung:</strong> Du kannst die lokal gespeicherten Daten jederzeit selbst über die Einstellungen der App oder die Entwicklertools deines Browsers löschen.</li>
+              <li><strong>Beschwerde:</strong> Du hast das Recht, eine Beschwerde beim <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer">Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB)</a> einzureichen.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>8. Datensicherheit</h2>
+            <p>Die Übertragung der Website erfolgt verschlüsselt via HTTPS. Da keine Personendaten auf eigenen Servern gespeichert werden, entfällt das Risiko eines Datenlecks auf Betreiberseite. Für die Sicherheit der lokal auf deinem Gerät gespeicherten Daten ist dein Gerät und dein Browser verantwortlich.</p>
+          </section>
+
+          <section>
+            <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+            <p>Diese Datenschutzerklärung kann bei Bedarf angepasst werden, z. B. wenn sich technische Gegebenheiten oder gesetzliche Anforderungen ändern. Die jeweils aktuelle Version ist auf dieser Seite abrufbar. Stand: April 2026.</p>
+          </section>
+
+          <section>
+            <h2>10. Kontakt</h2>
+            <p>Bei Fragen zum Datenschutz kannst du dich per E-Mail an <a class="contact-email"></a> wenden.</p>
+          </section>
         </div>
       </div>
     </div>
 
   </main>
+
+  <!-- FOOTER -->
+  <footer id="app-footer">
+    <span class="footer-copy">© <span id="copyright-year"></span> Arjen Hoti · offerte-bis-rechnung.ch</span>
+    <nav class="footer-links">
+      <button class="footer-link" onclick="navigate('impressum')">Impressum</button>
+      <span class="footer-sep">·</span>
+      <button class="footer-link" onclick="navigate('datenschutz')">Datenschutz</button>
+    </nav>
+  </footer>
+
 </div>
 
 <!-- ── TOAST ──────────────────────────────────────────────────── -->
